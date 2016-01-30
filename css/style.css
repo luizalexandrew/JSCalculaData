@@ -30,18 +30,36 @@ body{
 }
 
 .cardIniti.mdl-card{
-    top: 10px;
+    top: 5px;
+    bottom: 5px;
     min-height: 120px;
     margin: auto;
-    margin-top: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    animation-name: example;
+    animation-duration: 0.5s;
 }
 
 .cardTempo.mdl-card{
-    top: 10px;
+    top: 5px;
+    bottom: 5px;
     min-height: 145px;
     margin: auto;
     margin-top: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    animation-name: example;
+    animation-duration: 0.5s;
+}
 
+@keyframes example {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes exampleII {
+    from {opacity: 1;}
+    to {opacity: 0;}
 }
 
 @media all and (max-width: 749px){
@@ -176,4 +194,8 @@ body{
 
 .floatRight{
     float: right;
+}
+
+.conteinerDatas{
+    width: 100%;
 }
