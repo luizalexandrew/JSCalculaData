@@ -1,12 +1,12 @@
 "use strict";
 
 (function initAPP() {
-    carregarDatasLocalStorage();    
-    document.getElementById("btbAddDia").onclick = function criarBtbAddDia() {   
+    carregarDatasLocalStorage();
+    document.getElementById("btbAddDia").onclick = function criarBtbAddDia() {
         var vdataFinal = new Date(document.getElementById("dataFinal").value);
-        var vdataInicio = new Date();     
+        var vdataInicio = new Date();
         if (vdataFinal >= vdataInicio - 86400000 && vdataFinal.getFullYear() < 2100) {
-            var DataContagem = criarObjData(vdataFinal,vdataInicio);
+            var DataContagem = criarObjData(vdataFinal, vdataInicio);
             gravarLocalStorage(DataContagem);
             carregarCardData(DataContagem);
         } else {
@@ -15,32 +15,32 @@
     }
 })();
 
-function criarObjData(vdataFinal,vdataInicio) {    
+function criarObjData(vdataFinal, vdataInicio) {
     var DataContagem = {
-                id: vdataInicio.getTime(),
-                diaInicio: vdataInicio.getDate(),
-                mesInicio: vdataInicio.getMonth(),
-                anoInicio: vdataInicio.getFullYear(),
-                diaFinal: vdataFinal.getDate(),
-                mesFinal: vdataFinal.getMonth(),
-                anoFinal: vdataFinal.getFullYear(),
-                getDI: function() {
-                    var DiaInicio = {
-                        dia: this.diaInicio,
-                        mes: this.mesInicio,
-                        ano: this.anoInicio
-                    }
-                    return DiaInicio;
-                },
-                getDF: function() {
-                    var DiaFinal = {
-                        dia: this.diaFinal,
-                        mes: this.mesFinal,
-                        ano: this.anoFinal
-                    }
-                    return DiaFinal;
-                }
-            }; 
+        id: vdataInicio.getTime(),
+        diaInicio: vdataInicio.getDate(),
+        mesInicio: vdataInicio.getMonth(),
+        anoInicio: vdataInicio.getFullYear(),
+        diaFinal: vdataFinal.getDate(),
+        mesFinal: vdataFinal.getMonth(),
+        anoFinal: vdataFinal.getFullYear(),
+        getDI: function() {
+            var DiaInicio = {
+                dia: this.diaInicio,
+                mes: this.mesInicio,
+                ano: this.anoInicio
+            }
+            return DiaInicio;
+        },
+        getDF: function() {
+            var DiaFinal = {
+                dia: this.diaFinal,
+                mes: this.mesFinal,
+                ano: this.anoFinal
+            }
+            return DiaFinal;
+        }
+    };
     return DataContagem;
 }
 
@@ -55,79 +55,6 @@ function carregarDatasLocalStorage() {
     }
 }
 
-function carregarCardData(ObjData) {
-    var conteinerDatas = document.getElementById("conteinerDatas");
-    var newcard = document.createElement('div');
-    newcard.className = "cardTempo mdl-card";
-    newcard.id = "card-" + ObjData.id;
-    conteinerDatas.appendChild(newcard);
-
-    var excluir = document.createElement('div');
-    excluir.className = "excluir";
-    newcard.appendChild(excluir);
-
-    var btnExluir = document.createElement('BUTTON');
-    btnExluir.className = "mdl-button mdl-js-button mdl-button--icon floatRight";
-    btnExluir.value = "exc-" + ObjData.id;
-    btnExluir.onclick = function() {
-        conteinerDatas.removeChild(document.getElementById("card-" + ObjData.id));
-        removerDataLocalStorage(ObjData.id);
-    }
-    excluir.appendChild(btnExluir);
-
-    var btnIcon = document.createElement("I")
-    var iconvalue = document.createTextNode("remove");
-    btnIcon.className = "material-icons";
-    btnIcon.appendChild(iconvalue);
-    btnExluir.appendChild(btnIcon);
-
-    var tempoRestante = document.createElement('div');
-    tempoRestante.className = "tempoRestante";
-    newcard.appendChild(tempoRestante);
-
-    var tempo = document.createElement('div');
-    tempo.className = "tempo";
-    tempoRestante.appendChild(tempo);
-
-    var textoTempoRestante = document.createElement("H1");
-    var textoH1TempoRestante = document.createTextNode(
-        CalcularTempoRestante(ObjData)
-    ); // Dias Restantes Valor
-    textoTempoRestante.appendChild(textoH1TempoRestante);
-    textoTempoRestante.className = "textoTempoRestante";
-    tempo.appendChild(textoTempoRestante);
-
-    var datasInicialFinal = document.createElement('div');
-    datasInicialFinal.className = "datasInicialFinal";
-    newcard.appendChild(datasInicialFinal);
-
-    var dateInicialCard = document.createElement("P")
-    var dataInicialText = document.createTextNode(ObjData.diaInicio + "/" + (ObjData.mesInicio + 1) + "/" + ObjData.anoInicio); // Data Inicial Card
-    dateInicialCard.className = "floatLeft";
-    dateInicialCard.appendChild(dataInicialText);
-    datasInicialFinal.appendChild(dateInicialCard);
-
-    var dateInicialCard = document.createElement("P")
-    var dataInicialText = document.createTextNode(ObjData.diaFinal + "/" + (ObjData.mesFinal + 1) + "/" + ObjData.anoFinal); // Data Inicial Card
-    dateInicialCard.className = "floatRight";
-    dateInicialCard.appendChild(dataInicialText);
-    datasInicialFinal.appendChild(dateInicialCard);
-
-    var datasInicialFinal = document.createElement('div');
-    datasInicialFinal.className = "datasInicialFinal";
-    newcard.appendChild(datasInicialFinal);
-
-    var progresso = document.createElement('div');
-    progresso.className = "progresso";
-    newcard.appendChild(progresso);
-
-    var progressoBarra = document.createElement('div');
-    progressoBarra.className = "progressoBarra";
-    progressoBarra.id = "bar" + ObjData.id;
-    progressoBarra.style.width = calculaPorcentagemBarra(ObjData);
-    progresso.appendChild(progressoBarra);
-}
-
 function calculaPorcentagemBarra(ObjData) {
     var data = new Date();
     var diasRestantes = calcularDiferencaDatas(data.getFullYear(), data.getMonth(), data.getDate(), ObjData.anoFinal, ObjData.mesFinal, ObjData.diaFinal);
@@ -139,15 +66,78 @@ function calculaPorcentagemBarra(ObjData) {
         return "100%";
 }
 
-function CalcularTempoRestante(ObjData) {
+function calculaTempoRestante(ObjData) {
     var data = new Date();
     var tempo = calcularDiferencaDatas(data.getFullYear(), data.getMonth(), data.getDate(), ObjData.anoFinal, ObjData.mesFinal, ObjData.diaFinal);
     if (tempo >= 1)
         return tempo + " Dias";
-    else if (tempo == 0)    
+    else if (tempo == 0)
         return "Chegou o dia";
     else
         return "Passou o dia";
+}
+
+function carregarCardData(ObjData) {
+    //Carrega card de dias para uma data
+    var conteinerDatas = document.getElementById("conteinerDatas");
+    var newcard = document.createElement('div');
+    var excluir = document.createElement('div');
+    var btnExluir = document.createElement('BUTTON');
+    var btnIcon = document.createElement("I");
+    var iconvalue = document.createTextNode("remove");
+    var tempoRestante = document.createElement('div');
+    var tempo = document.createElement('div');
+    var textoTempoRestante = document.createElement("H1");
+    var textoH1TempoRestante = document.createTextNode(
+        calculaTempoRestante(ObjData)
+    ); // Dias Restantes Valor
+    var datasInicialFinal = document.createElement('div');
+    var dateInicialCard = document.createElement("P")
+    var dataInicialText = document.createTextNode(ObjData.diaInicio + "/" + (ObjData.mesInicio + 1) + "/" + ObjData.anoInicio); // Data Inicial Card
+    var dateInicialCard = document.createElement("P")
+    var dataInicialText = document.createTextNode(ObjData.diaFinal + "/" + (ObjData.mesFinal + 1) + "/" + ObjData.anoFinal); // Data Inicial Card
+    var datasInicialFinal = document.createElement('div');
+    var progresso = document.createElement('div');
+    var progressoBarra = document.createElement('div');
+
+    newcard.className = "cardTempo mdl-card";
+    newcard.id = "card-" + ObjData.id;
+    conteinerDatas.appendChild(newcard);
+    excluir.className = "excluir";
+    newcard.appendChild(excluir);
+    btnExluir.className = "mdl-button mdl-js-button mdl-button--icon floatRight";
+    btnExluir.value = "exc-" + ObjData.id;
+    btnExluir.onclick = function excluirCardData() {
+        conteinerDatas.removeChild(document.getElementById("card-" + ObjData.id));
+        removerDataLocalStorage(ObjData.id);
+    }
+    excluir.appendChild(btnExluir);
+    btnIcon.className = "material-icons";
+    btnIcon.appendChild(iconvalue);
+    btnExluir.appendChild(btnIcon);
+    tempoRestante.className = "tempoRestante";
+    newcard.appendChild(tempoRestante);
+    tempo.className = "tempo";
+    tempoRestante.appendChild(tempo);
+    textoTempoRestante.appendChild(textoH1TempoRestante);
+    textoTempoRestante.className = "textoTempoRestante";
+    tempo.appendChild(textoTempoRestante);
+    datasInicialFinal.className = "datasInicialFinal";
+    newcard.appendChild(datasInicialFinal);
+    dateInicialCard.className = "floatLeft";
+    dateInicialCard.appendChild(dataInicialText);
+    datasInicialFinal.appendChild(dateInicialCard);
+    dateInicialCard.className = "floatRight";
+    dateInicialCard.appendChild(dataInicialText);
+    datasInicialFinal.appendChild(dateInicialCard);
+    datasInicialFinal.className = "datasInicialFinal";
+    newcard.appendChild(datasInicialFinal);
+    progresso.className = "progresso";
+    newcard.appendChild(progresso);
+    progressoBarra.className = "progressoBarra";
+    progressoBarra.id = "bar" + ObjData.id;
+    progressoBarra.style.width = calculaPorcentagemBarra(ObjData);
+    progresso.appendChild(progressoBarra);
 }
 
 function gravarLocalStorage(Objeto) {
