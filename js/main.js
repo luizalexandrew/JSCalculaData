@@ -1,11 +1,23 @@
-window.onload = function() {
-    carregarDatasLocalStorage();
-    document.getElementById("btbAddDia").onclick = function() {
+"use strict";
+
+(function initAPP() {
+    carregarDatasLocalStorage();    
+    document.getElementById("btbAddDia").onclick = function criarBtbAddDia() {   
         var vdataFinal = new Date(document.getElementById("dataFinal").value);
-        var vdataInicio = new Date();
-        if (vdataFinal >= vdataInicio - 86400000 && vdataFinal.getFullYear() < 2020) {
-            var DataContagem = {
-                id: vdataInicio.getTime(), // ID == milisegundos desde Jan 1, 1970
+        var vdataInicio = new Date();     
+        if (vdataFinal >= vdataInicio - 86400000 && vdataFinal.getFullYear() < 2100) {
+            var DataContagem = criarObjData(vdataFinal,vdataInicio);
+            gravarLocalStorage(DataContagem);
+            carregarCardData(DataContagem);
+        } else {
+            document.getElementById("dataFinal").setCustomValidity("Data informada incorreta");
+        }
+    }
+})();
+
+function criarObjData(vdataFinal,vdataInicio) {    
+    var DataContagem = {
+                id: vdataInicio.getTime(),
                 diaInicio: vdataInicio.getDate(),
                 mesInicio: vdataInicio.getMonth(),
                 anoInicio: vdataInicio.getFullYear(),
@@ -28,28 +40,22 @@ window.onload = function() {
                     }
                     return DiaFinal;
                 }
-            };
-            gravarLocalStorage(DataContagem);
-            carregarHTMLData(DataContagem);
-        } else {
-            document.getElementById("dataFinal").setCustomValidity("Data informada incorreta");
-        }
-    }
+            }; 
+    return DataContagem;
 }
 
 function carregarDatasLocalStorage() {
     try {
         var datasLocalStorage = localStorage.getItem("DatasGravadas");
         var datasString = datasLocalStorage.split(" ");
-        for (var i = 0; i < datasString.length; i++) {
-            carregarHTMLData(JSON.parse(datasString[i]));
-        }
+        for (var i = 0; i < datasString.length; i++)
+            carregarCardData(JSON.parse(datasString[i]));
     } catch (e) {
         console.log("Ainda não possuí datas adicionadas");
     }
 }
 
-function carregarHTMLData(ObjData) {
+function carregarCardData(ObjData) {
     var conteinerDatas = document.getElementById("conteinerDatas");
     var newcard = document.createElement('div');
     newcard.className = "cardTempo mdl-card";
@@ -65,7 +71,7 @@ function carregarHTMLData(ObjData) {
     btnExluir.value = "exc-" + ObjData.id;
     btnExluir.onclick = function() {
         conteinerDatas.removeChild(document.getElementById("card-" + ObjData.id));
-        removerLocalStorage(ObjData.id);
+        removerDataLocalStorage(ObjData.id);
     }
     excluir.appendChild(btnExluir);
 
@@ -127,23 +133,21 @@ function calculaPorcentagemBarra(ObjData) {
     var diasRestantes = calcularDiferencaDatas(data.getFullYear(), data.getMonth(), data.getDate(), ObjData.anoFinal, ObjData.mesFinal, ObjData.diaFinal);
     var diasTotais = calcularDiferencaDatas(ObjData.anoInicio, ObjData.mesInicio, ObjData.diaInicio, ObjData.anoFinal, ObjData.mesFinal, ObjData.diaFinal);
     //Se VAR diasTotais for igual a zero, o dia adicionado é igual ao dia final
-    if (diasTotais > 0) {
+    if (diasTotais > 0)
         return Math.floor(((100 * diasRestantes) / diasTotais - 100) * -1) + "%";
-    } else {
+    else
         return "100%";
-    }
 }
 
 function CalcularTempoRestante(ObjData) {
     var data = new Date();
     var tempo = calcularDiferencaDatas(data.getFullYear(), data.getMonth(), data.getDate(), ObjData.anoFinal, ObjData.mesFinal, ObjData.diaFinal);
-    if (tempo >= 1) {
+    if (tempo >= 1)
         return tempo + " Dias";
-    } else if (tempo == 0) {
+    else if (tempo == 0)    
         return "Chegou o dia";
-    } else {
+    else
         return "Passou o dia";
-    }
 }
 
 function gravarLocalStorage(Objeto) {
@@ -157,7 +161,7 @@ function gravarLocalStorage(Objeto) {
     }
 }
 
-function removerLocalStorage(idObjeto) {
+function removerDataLocalStorage(idObjeto) {
     try {
         var datasGravadasString = localStorage.getItem("DatasGravadas");
         var datasGravadasSplit = datasGravadasString.split(" ");
@@ -171,22 +175,6 @@ function removerLocalStorage(idObjeto) {
     } catch (e) {
         console.log("idObjeto incorreto, impossível remover");
     }
-}
-
-function getDiaAtual() {
-    var dia = new Date();
-    var diaAtual = {
-        dia: dia.getDate(),
-        mes: dia.getMonth(),
-        ano: dia.getFullYear()
-    };
-    return DiaAtual;
-}
-
-function calcularDiferencaDatas(DiaFinalc, DiaAtualc) {
-    var DiaFinal = new Date(DiaFinalc.ano, DiaFinalc.mes, DiaFinalc.dia);
-    var DiaAtual = new Date(DiaAtualc.ano, DiaAtualc.mes, DiaAtualc.dia);
-    return Math.floor((DiaFinal - DiaAtual) / (1000 * 60 * 60 * 24));
 }
 
 function calcularDiferencaDatas(DAtualAno, DAtualMes, DAtualDia, DFinalAno, DFinalMes, DFinalDia) {
