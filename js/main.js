@@ -94,8 +94,8 @@ function carregarCardData(ObjData) {
     var datasInicialFinal = document.createElement('div');
     var dateInicialCard = document.createElement("P")
     var dataInicialText = document.createTextNode(ObjData.diaInicio + "/" + (ObjData.mesInicio + 1) + "/" + ObjData.anoInicio); // Data Inicial Card
-    var dateInicialCard = document.createElement("P")
-    var dataInicialText = document.createTextNode(ObjData.diaFinal + "/" + (ObjData.mesFinal + 1) + "/" + ObjData.anoFinal); // Data Inicial Card
+    var dateFinalCard = document.createElement("P")
+    var dataFinalText = document.createTextNode(ObjData.diaFinal + "/" + (ObjData.mesFinal + 1) + "/" + ObjData.anoFinal); // Data Inicial Card
     var datasInicialFinal = document.createElement('div');
     var progresso = document.createElement('div');
     var progressoBarra = document.createElement('div');
@@ -127,9 +127,9 @@ function carregarCardData(ObjData) {
     dateInicialCard.className = "floatLeft";
     dateInicialCard.appendChild(dataInicialText);
     datasInicialFinal.appendChild(dateInicialCard);
-    dateInicialCard.className = "floatRight";
-    dateInicialCard.appendChild(dataInicialText);
-    datasInicialFinal.appendChild(dateInicialCard);
+    dateFinalCard.className = "floatRight";
+    dateFinalCard.appendChild(dataFinalText);
+    datasInicialFinal.appendChild(dateFinalCard);
     datasInicialFinal.className = "datasInicialFinal";
     newcard.appendChild(datasInicialFinal);
     progresso.className = "progresso";
